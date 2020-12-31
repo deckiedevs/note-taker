@@ -62,26 +62,36 @@ const renderActiveNote = () => {
 
 	// if active note exists, display note
 	if (activeNote.id) {
-		noteTitle.setAttribute('readonly', true);
-		noteText.setAttribute('readonly', true);
+        noteTitle.setAttribute('data-id', activeNote.id);
 		noteTitle.value = activeNote.title;
 		noteText.value = activeNote.text;
 	}
 	// else use placeholder text
 	else {
-		noteTitle.removeAttribute('readonly');
-		noteText.removeAttribute('readonly');
+        noteTitle.removeAttribute('data-id');
 		noteTitle.value = '';
 		noteText.value = '';
 	}
 };
 
 const handleNoteSave = () => {
-	const newNote = {
-		title: noteTitle.value,
-		text: noteText.value,
-	};
-	saveNote(newNote).then(() => {
+    let note;
+    let noteId = noteTitle.getAttribute('data-id');
+    
+    if (noteId) { 
+        note = {
+            title: noteTitle.value,
+            text: noteText.value,
+            id: noteId
+        };
+    } else {
+        note = {
+            title: noteTitle.value,
+            text: noteText.value
+        };
+    };
+
+	saveNote(note).then(() => {
 		getAndRenderNotes();
 		renderActiveNote();
 	});
